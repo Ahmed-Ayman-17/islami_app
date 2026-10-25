@@ -45,7 +45,7 @@ class HadethDetails extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 20,
                     height:
-                        1.6, // المسافة بين السطور لسهولة ومراعاة راحة العين في القراءة
+                        1.7, // المسافة بين السطور لسهولة ومراعاة راحة العين في القراءة
                   ),
                 ),
               ),

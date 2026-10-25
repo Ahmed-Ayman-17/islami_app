@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:islami_app/ui/splash/ui_uties.dart';
 
 class DefaultScreen extends StatelessWidget {
-  final String title; // عنوان الشاشة
-  final Widget body; // محتوى الشاشة اللي هيتغير
-  final Widget? bottomNavigationBar; // اختياري عشان شاشة التفاصيل مفيهاش Navbar
+  final String title;
+  final Widget body;
+  final Widget? bottomNavigationBar;
 
   const DefaultScreen({
     super.key,
@@ -15,28 +15,38 @@ class DefaultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // سطر واحد بيعرفك إنت في أي وضع حالياً
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Stack(
       children: [
-        // 1. الخلفية الثابتة في كل الشاشات
         Positioned.fill(
           child: Image.asset(
-            getFullPathImage("main_background.jpg"),
+            // تغيير مسار الصورة بناءً على الثيم
+            isDarkMode
+                ? getFullPathImage(
+                    "dark_bg.png",
+                  ) // اسم صورة الخلفية الغامقة عندك
+                : getFullPathImage("main_background.jpg"),
             fit: BoxFit.cover,
           ),
         ),
-
-        // 2. الـ Scaffold الشفاف
         Scaffold(
-          backgroundColor: Colors.transparent, // مهم جداً عشان الخلفية تبان
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
             title: Text(title),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
+            // أضفنا تغيير لون نص الـ AppBar بناءً على الثيم
+            titleTextStyle: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: isDarkMode ? Colors.white : Colors.black,
+            ),
           ),
-          body: body, // المحتوى اللي هنبعته من بره هيتحط هنا
-          bottomNavigationBar:
-              bottomNavigationBar, // هيتحط لو مبعوت، لو مش مبعوت مش هيظهر
+          body: body,
+          bottomNavigationBar: bottomNavigationBar,
         ),
       ],
     );

@@ -316,7 +316,7 @@ class QuranTab extends StatelessWidget {
                   child: ChapterTitle(
                     title: chapters[index],
                     versesCount: versesNumber[index].toString(),
-                    index: 0,
+                    index: index,
                   ),
                 );
               },

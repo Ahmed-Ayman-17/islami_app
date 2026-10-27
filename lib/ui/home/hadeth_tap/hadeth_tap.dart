@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:islami_app/ui/hadeth-details/hadeth-details.dart';
+import 'package:islami_app/l10n/app_localizations.dart';
+import 'package:islami_app/theme/themes.dart';
+import 'package:islami_app/ui/hadeth_details/hadeth_details.dart';
 import 'package:islami_app/ui/splash/ui_uties.dart';
 
-// نموذج بيانات الحديث (Data Model) لتخزين عنوان الحديث ونص محتواه
 class Hadeth {
   String title;
   String content;
   Hadeth({required this.title, required this.content});
 }
 
-// الشاشة الرئيسية لتبويب الأحاديث
 class HadethTab extends StatefulWidget {
   const HadethTab({super.key});
 
@@ -19,21 +19,24 @@ class HadethTab extends StatefulWidget {
 }
 
 class _HadethTabState extends State<HadethTab> {
-  // قائمة لتخزين جميع الأحاديث بعد قراءتها من الملف
   List<Hadeth> allHadeth = [];
 
   @override
   void initState() {
     super.initState();
-    // استدعاء دالة قراءة الملف فور فتح الصفحة لأول مرة
     readHadethFile();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color dividerColor =
+        isDarkMode ? MyThemeData.darkAccent : MyThemeData.lightPrimary;
+    Color textColor = isDarkMode ? Colors.white : const Color(0xFF242424);
+    var localizations = AppLocalizations.of(context)!;
+
     return Column(
       children: [
-        // عرض الشعار (اللوجو) العلوي المستوحى من فيجما
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Center(
@@ -43,32 +46,31 @@ class _HadethTabState extends State<HadethTab> {
             ),
           ),
         ),
-
-        // خط فاصل علوي
-        Container(width: double.infinity, height: 2, color: Colors.brown),
-
-        // عنوان القسم "الأحاديث"
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
+        Container(width: double.infinity, height: 2, color: dividerColor),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
-            'الأحاديث',
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            localizations.hadeth,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
-
-        // خط فاصل سفلي
-        Container(width: double.infinity, height: 2, color: Colors.brown),
-
-        // عرض القائمة أو شاشة التحميل إذا كانت البيانات لم تكتمل بعد
+        Container(width: double.infinity, height: 2, color: dividerColor),
         Expanded(
           child: allHadeth.isEmpty
-              ? const Center(child: CircularProgressIndicator()) // مؤشر التحميل
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: dividerColor,
+                  ),
+                )
               : ListView.separated(
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        // الانتقال لصفحة تفاصيل الحديث وإرسال الحديث الحالي كمُعامل (Arguments)
                         Navigator.pushNamed(
                           context,
                           HadethDetails.routeName,
@@ -78,18 +80,20 @@ class _HadethTabState extends State<HadethTab> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                          allHadeth[index].title, // عرض عنوان الحديث في القائمة
+                          allHadeth[index].title,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 25),
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: textColor,
+                          ),
                         ),
                       ),
                     );
                   },
-                  // الفاصل المرئي بين الأحاديث في القائمة
                   separatorBuilder: (context, index) => Container(
                     width: double.infinity,
                     height: 1,
-                    color: Colors.brown,
+                    color: dividerColor,
                     margin: const EdgeInsets.symmetric(horizontal: 40),
                   ),
                   itemCount: allHadeth.length,
@@ -99,36 +103,29 @@ class _HadethTabState extends State<HadethTab> {
     );
   }
 
-  // دالة قراءة ملف الأحاديث النصي وتقسيمه باستخدام الرمز #
   void readHadethFile() async {
-    // قراءة محتوى الملف بالكامل كنص واحد من مجلد الـ assets
     String fileContent = await rootBundle.loadString(
       'assets/files/ahadeth.txt',
     );
 
-    // تقسيم الملف إلى أجزاء بناءً على علامة # (كل جزء يمثل حديثاً مستقلاً)
     List<String> separatedAhadeth = fileContent.split("#");
 
     for (int i = 0; i < separatedAhadeth.length; i++) {
       String singleHadeth = separatedAhadeth[i];
 
-      // تقسيم الحديث الواحد إلى أسطر بناءً على السطر الجديد \n
       List<String> lines = singleHadeth.trim().split("\n");
       if (lines.isEmpty || lines[0].trim().isEmpty) continue;
 
-      // السطر الأول يعتبر هو عنوان الحديث (مثل: الحديث الأول)
       String title = lines[0];
-      lines.removeAt(0); // إزالة العنوان من السطور
+      lines.removeAt(0);
 
-      // دمج باقي السطور معاً لتصبح نص الحديث الكامل في متغير واحد
       String content = lines.join("\n");
 
-      // إنشاء كائن الحديث وإضافته للقائمة
       Hadeth h = Hadeth(title: title, content: content);
       allHadeth.add(h);
     }
 
-    // إعادة بناء الشاشة بعد اكتمال تحميل الأحاديث لعرضها
+    if (!mounted) return;
     setState(() {});
   }
 }

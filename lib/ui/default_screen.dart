@@ -15,18 +15,14 @@ class DefaultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // سطر واحد بيعرفك إنت في أي وضع حالياً
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Stack(
       children: [
         Positioned.fill(
           child: Image.asset(
-            // تغيير مسار الصورة بناءً على الثيم
             isDarkMode
-                ? getFullPathImage(
-                    "dark_bg.png",
-                  ) // اسم صورة الخلفية الغامقة عندك
+                ? getFullPathImage("dark-bg.png")
                 : getFullPathImage("main_background.jpg"),
             fit: BoxFit.cover,
           ),
@@ -38,11 +34,13 @@ class DefaultScreen extends StatelessWidget {
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            // أضفنا تغيير لون نص الـ AppBar بناءً على الثيم
             titleTextStyle: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
-              color: isDarkMode ? Colors.white : Colors.black,
+              color: isDarkMode ? Colors.white : const Color(0xFF242424),
+            ),
+            iconTheme: IconThemeData(
+              color: isDarkMode ? Colors.white : const Color(0xFF242424),
             ),
           ),
           body: body,

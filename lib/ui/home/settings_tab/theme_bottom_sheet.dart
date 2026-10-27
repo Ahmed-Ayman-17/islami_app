@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:islami_app/ui/home/settings_tab/settings_tab.dart'; // تأكد من المسار الصحيح لملف الإعدادات
+import 'package:islami_app/l10n/app_localizations.dart';
+import 'package:islami_app/settings/app_settings.dart';
+import 'package:islami_app/theme/themes.dart';
 
-// نافذة من الأسفل (Bottom Sheet) لاختيار الثيم (فاتیح أو داكن)
-class ThemeBottomSheet extends StatefulWidget {
+class ThemeBottomSheet extends StatelessWidget {
   const ThemeBottomSheet({super.key});
 
   @override
-  State<ThemeBottomSheet> createState() => _ThemeBottomSheetState();
-}
-
-class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
-  @override
   Widget build(BuildContext context) {
-    // التحقق مما إذا كان الثيم الحالي هو الداكن أم الفاتح
-    bool isDarkMode = AppSettings.themeModeNotifier.value == ThemeMode.dark;
+    bool isDarkMode = AppSettings.isDarkMode;
+    var localizations = AppLocalizations.of(context)!;
+    Color accentColor =
+        isDarkMode ? MyThemeData.darkAccent : MyThemeData.lightPrimary;
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDarkMode ? const Color(0xFF141A2E) : Colors.white,
+        color: isDarkMode ? MyThemeData.darkPrimary : Colors.white,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -28,37 +26,31 @@ class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // خيار الوضع الفاتح (Light Mode)
           InkWell(
             onTap: () {
-              // تغيير الثيم إلى Light وإغلاق الشيت فوراً
-              AppSettings.themeModeNotifier.value = ThemeMode.light;
+              AppSettings.changeTheme(ThemeMode.light);
               Navigator.pop(context);
             },
-            child: AppSettings.themeModeNotifier.value == ThemeMode.light
-                ? getSelectedItemWidget("Light", isDarkMode)
-                : getUnselectedItemWidget("Light", isDarkMode),
+            child: !isDarkMode
+                ? getSelectedItemWidget(localizations.light, accentColor)
+                : getUnselectedItemWidget(localizations.light, isDarkMode),
           ),
           const SizedBox(height: 20),
-
-          // خيار الوضع الداكن (Dark Mode)
           InkWell(
             onTap: () {
-              // تغيير الثيم إلى Dark وإغلاق الشيت فوراً
-              AppSettings.themeModeNotifier.value = ThemeMode.dark;
+              AppSettings.changeTheme(ThemeMode.dark);
               Navigator.pop(context);
             },
-            child: AppSettings.themeModeNotifier.value == ThemeMode.dark
-                ? getSelectedItemWidget("Dark", isDarkMode)
-                : getUnselectedItemWidget("Dark", isDarkMode),
+            child: isDarkMode
+                ? getSelectedItemWidget(localizations.dark, accentColor)
+                : getUnselectedItemWidget(localizations.dark, isDarkMode),
           ),
         ],
       ),
     );
   }
 
-  // دالة لتصميم العنصر المختار (يظهر تحته علامة صح ولونه مميز)
-  Widget getSelectedItemWidget(String text, bool isDarkMode) {
+  Widget getSelectedItemWidget(String text, Color accentColor) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -67,15 +59,14 @@ class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFFB7935F), // اللون الذهبي المميز للتحديد
+            color: accentColor,
           ),
         ),
-        const Icon(Icons.check, color: Color(0xFFB7935F), size: 25),
+        Icon(Icons.check, color: accentColor, size: 25),
       ],
     );
   }
 
-  // دالة لتصميم العنصر غير المختار
   Widget getUnselectedItemWidget(String text, bool isDarkMode) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,23 +76,10 @@ class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
-            color: isDarkMode ? Colors.white : Colors.black,
+            color: isDarkMode ? Colors.white : const Color(0xFF242424),
           ),
         ),
       ],
     );
   }
-}
-
-// كلاس عام لإدارة حالة الثيم واللغة باستخدام ValueNotifier بدون Provider
-class AppSettings {
-  // ValueNotifier خاص بحالة الثيم (يبدأ بـ Light افتراضياً)
-  static final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(
-    ThemeMode.light,
-  );
-
-  // ValueNotifier خاص بحالة اللغة (سيتم استخدامه في التاسك القادم)
-  static final ValueNotifier<Locale> localeNotifier = ValueNotifier(
-    const Locale('ar'),
-  );
 }

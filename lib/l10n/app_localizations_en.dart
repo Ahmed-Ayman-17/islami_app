@@ -43,4 +43,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get arabic => 'Arabic';
+
+  @override
+  String get sura_name => 'Surah Name';
+
+  @override
+  String get verses_number => 'Verses Number';
+
+  @override
+  String get number_of_praises => 'Number of Praises';
+
+  @override
+  String get holy_quran_radio => 'Holy Quran Radio';
 }

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart'; // 👈 ضروري
 import 'package:islami_app/l10n/app_localizations.dart';
-
-// استيرادات شاشاتك
-import 'package:islami_app/ui/home/home_screen.dart';
+import 'package:islami_app/settings/app_settings.dart';
 import 'package:islami_app/theme/themes.dart';
-import 'package:islami_app/ui/home/settings_tab/theme_bottom_sheet.dart';
-import 'package:islami_app/ui/splash/splash_screen.dart';
 import 'package:islami_app/ui/chapter_details/chapter_details.dart';
-import 'package:islami_app/ui/hadeth-details/hadeth-details.dart';
+import 'package:islami_app/ui/hadeth_details/hadeth_details.dart';
+import 'package:islami_app/ui/home/home_screen.dart';
+import 'package:islami_app/ui/splash/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +16,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // دمجنا المراقبة على الثيم واللغة في Listenable واحد
     return ListenableBuilder(
       listenable: Listenable.merge([
         AppSettings.themeModeNotifier,
@@ -31,13 +27,10 @@ class MyApp extends StatelessWidget {
           title: 'Islami App',
           theme: MyThemeData.lightTheme,
           darkTheme: MyThemeData.darkTheme,
-
           themeMode: AppSettings.themeModeNotifier.value,
-          locale: AppSettings.localeNotifier.value, // 👈 قراءة اللغة الحالية
-          // 👈 إعدادات مكاتب الترجمة
+          locale: AppSettings.localeNotifier.value,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-
           initialRoute: SplashScreen.routeName,
           routes: {
             SplashScreen.routeName: (context) => const SplashScreen(),

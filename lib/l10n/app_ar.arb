@@ -10,5 +10,9 @@
   "light": "فاتح",
   "dark": "داكن",
   "english": "الإنجليزية",
-  "arabic": "العربية"
+  "arabic": "العربية",
+  "sura_name": "إسم السورة",
+  "verses_number": "عدد الآيات",
+  "number_of_praises": "عدد التسبيحات",
+  "holy_quran_radio": "إذاعة القرآن الكريم"
 }

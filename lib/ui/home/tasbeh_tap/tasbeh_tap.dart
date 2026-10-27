@@ -1,7 +1,8 @@
-import 'dart:math'; // لاستخدام الدوال الرياضية وحساب زاوية الدوران بالراديان
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:islami_app/l10n/app_localizations.dart';
+import 'package:islami_app/theme/themes.dart';
 
-// تاب السبحة المسؤول عن عرض السبحة التفاعلية والعداد والأذكار
 class TasbehTab extends StatefulWidget {
   const TasbehTab({super.key});
 
@@ -10,28 +11,15 @@ class TasbehTab extends StatefulWidget {
 }
 
 class _TasbehTabState extends State<TasbehTab> {
-  // متغير لحفظ عدد التسبيحات الحالي ويبدأ من صفر
   int counter = 0;
-
-  // قائمة الأذكار التي يتم التبديل بينها بالترتيب المطلوب
   final List<String> azkar = ['سبحان الله', 'الحمد لله', 'الله أكبر'];
-
-  // مؤشر الذكر الحالي داخل القائمة (يبدأ بـ 0 يعني 'سبحان الله')
   int currentIndex = 0;
-
-  // زاوية دوران خرز السبحة وتزداد تدريجياً مع كل ضغطة
   double rotationAngle = 0.0;
 
-  // دالة مسؤولة عن تحديث العداد، وزاوية الدوران، والذكر الحالي عند كل ضغطة
   void incrementCounter() {
     setState(() {
-      // زيادة العداد بواحدة عند الضغط
       counter++;
-
-      // حساب زاوية الدوران لكل ضغطة (360 درجة مقسومة على 33 تسبيحة ومحولة إلى الراديان)
       rotationAngle += (2 * pi) / 33;
-
-      // إذا وصل العداد إلى 33، يتم إعادة تصفيره والتبديل للذكر التالي في القائمة
       if (counter == 33) {
         counter = 0;
         currentIndex = (currentIndex + 1) % azkar.length;
@@ -41,36 +29,48 @@ class _TasbehTabState extends State<TasbehTab> {
 
   @override
   Widget build(BuildContext context) {
-    // جلب مقاسات الشاشة لضبط الأبعاد بشكل متجاوب وجميل
     var mediaQuery = MediaQuery.of(context).size;
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    var localizations = AppLocalizations.of(context)!;
+
+    Color? sebhaColor = isDarkMode ? MyThemeData.darkAccent : null;
+    Color titleColor = isDarkMode ? Colors.white : const Color(0xFF242424);
+    Color counterBoxColor = isDarkMode
+        ? MyThemeData.darkPrimary.withValues(alpha: 0.85)
+        : MyThemeData.lightPrimary.withValues(alpha: 0.57);
+    Color counterTextColor =
+        isDarkMode ? Colors.white : const Color(0xFF242424);
+    Color buttonBgColor =
+        isDarkMode ? MyThemeData.darkAccent : MyThemeData.lightPrimary;
+    Color buttonTextColor =
+        isDarkMode ? MyThemeData.darkPrimary : Colors.white;
 
     return SizedBox(
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // جزء تصميم السبحة (الراس ثابت في مكانه والدايرة تتحرك تحتها) باستخدام Stack
           Stack(
             alignment: Alignment.topCenter,
             children: [
-              // صورة رأس السبحة (تظل ثابتة ولا تتأثر بالدوران)
               Container(
                 margin: EdgeInsets.only(left: mediaQuery.width * 0.1),
                 child: Image.asset(
-                  'assets/images/head of seb7a.png', // ملف صورة رأس السبحة
+                  'assets/images/head of seb7a.png',
                   height: 80,
+                  color: sebhaColor,
                 ),
               ),
-              // صورة خرز السبحة الدائرية مع تطبيق تأثير الدوران بنعومة عند الضغط
               Container(
                 margin: const EdgeInsets.only(top: 45),
                 child: GestureDetector(
-                  onTap: incrementCounter, // الضغط على السبحة نفسها يزيد العداد
+                  onTap: incrementCounter,
                   child: Transform.rotate(
-                    angle: rotationAngle, // تطبيق زاوية الدوران المحسوبة
+                    angle: rotationAngle,
                     child: Image.asset(
-                      'assets/images/body of seb7a.png', // ملف صورة جسم السبحة الدائري
+                      'assets/images/body of seb7a.png',
                       height: 200,
+                      color: sebhaColor,
                     ),
                   ),
                 ),
@@ -78,45 +78,48 @@ class _TasbehTabState extends State<TasbehTab> {
             ],
           ),
           const SizedBox(height: 40),
-
-          // نص عنوان عدد التسبيحات الثابت
-          const Text(
-            'عدد التسبيحات',
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+          Text(
+            localizations.number_of_praises,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w600,
+              color: titleColor,
+            ),
           ),
           const SizedBox(height: 20),
-
-          // الحاوية التي تعرض رقم العد الحالي بشكل مميز
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
             decoration: BoxDecoration(
-              color: const Color(
-                0xFFB7935F,
-              ).withOpacity(0.57), // خلفية لونها متناسق مع الثيم
+              color: counterBoxColor,
               borderRadius: BorderRadius.circular(25),
+              border: isDarkMode
+                  ? Border.all(color: MyThemeData.darkAccent.withValues(alpha: 0.4))
+                  : null,
             ),
             child: Text(
-              '$counter', // عرض الرقم المتغير
-              style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              '$counter',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: counterTextColor,
+              ),
             ),
           ),
           const SizedBox(height: 25),
-
-          // زر الذكر الحالي الذي عند الضغط عليه يتفاعل أيضاً ويقوم بالتسبيح
           ElevatedButton(
-            onPressed: incrementCounter, // ربط زر الذكر بنفس دالة العد
+            onPressed: incrementCounter,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFB7935F), // اللون الأساسي للزر
+              backgroundColor: buttonBgColor,
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
             child: Text(
-              azkar[currentIndex], // عرض نص الذكر الحالي بناءً على المؤشر
-              style: const TextStyle(
+              azkar[currentIndex],
+              style: TextStyle(
                 fontSize: 22,
-                color: Colors.white,
+                color: buttonTextColor,
                 fontWeight: FontWeight.bold,
               ),
             ),

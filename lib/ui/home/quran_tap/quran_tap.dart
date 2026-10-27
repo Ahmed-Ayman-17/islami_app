@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:islami_app/l10n/app_localizations.dart';
 import 'package:islami_app/theme/themes.dart';
-import 'package:islami_app/ui/chapter_details/chapter_details.dart';
 import 'package:islami_app/ui/home/quran_tap/cahpter_title.dart';
 import 'package:islami_app/ui/splash/ui_uties.dart';
 
@@ -245,7 +245,14 @@ class QuranTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color dividerColor =
+        isDarkMode ? MyThemeData.darkAccent : MyThemeData.lightPrimary;
+    Color headerTextColor =
+        isDarkMode ? Colors.white : const Color(0xFF242424);
+    var localizations = AppLocalizations.of(context)!;
+
+    return SizedBox(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -260,33 +267,35 @@ class QuranTab extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 2,
-            color: MyThemeData.lightPrimary,
+            color: dividerColor,
           ),
 
           // عنوان الجدول (إسم السورة | عدد الآيات)
           IntrinsicHeight(
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Center(
                     child: Text(
-                      'عدد الآيات',
+                      localizations.verses_number,
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w900,
+                        color: headerTextColor,
                       ),
                     ),
                   ),
                 ),
                 // الخط العمودي الفاصل
-                Container(width: 2, color: MyThemeData.lightPrimary),
-                const Expanded(
+                Container(width: 2, color: dividerColor),
+                Expanded(
                   child: Center(
                     child: Text(
-                      'إسم السورة',
+                      localizations.sura_name,
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w900,
+                        color: headerTextColor,
                       ),
                     ),
                   ),
@@ -299,25 +308,18 @@ class QuranTab extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 2,
-            color: MyThemeData.lightPrimary,
+            color: dividerColor,
           ),
 
           // قائمة السور
           Expanded(
             child: ListView.separated(
-              padding: EdgeInsets
-                  .zero, // 👈 إزالة المسافة الفاضية من أعلى وأسفل القائمة
+              padding: EdgeInsets.zero,
               itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    // نقلنا الـ Navigation هنا عشان لما تدوس على أي سورة تفتح تفاصيلها
-                    Navigator.pushNamed(context, ChapterDetails.routeName);
-                  },
-                  child: ChapterTitle(
-                    title: chapters[index],
-                    versesCount: versesNumber[index].toString(),
-                    index: index,
-                  ),
+                return ChapterTitle(
+                  title: chapters[index],
+                  versesCount: versesNumber[index].toString(),
+                  index: index,
                 );
               },
               itemCount: chapters.length,
@@ -325,8 +327,7 @@ class QuranTab extends StatelessWidget {
                 return Container(
                   width: double.infinity,
                   height: 2,
-                  // شيلنا الـ margin عشان الخط يملى الشاشة ويبقى شكله زي الجدول بالظبط
-                  color: MyThemeData.lightPrimary,
+                  color: dividerColor,
                 );
               },
             ),

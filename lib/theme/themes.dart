@@ -1,52 +1,49 @@
 import 'package:flutter/material.dart';
 
 class MyThemeData {
-  static final Color lightPrimary = Color(0XFFB7935F);
-  // ملاحظة سريعة: يفضل تسميها darkPrimary بدل dartPrimary عشان تكون منطقية أكتر
-  static final Color darkPrimary = Color(0XFF141A2E);
+  static const Color lightPrimary = Color(0xFFB7935F);
+  static const Color darkPrimary = Color(0xFF141A2E);
+  static const Color darkAccent = Color(0xFFFACC1D);
 
   static final ThemeData lightTheme = ThemeData(
-    // 1. تعريف إن ده الثيم الفاتح
     brightness: Brightness.light,
-
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      selectedItemColor: const Color.fromARGB(255, 233, 230, 230),
-      unselectedItemColor: Colors.white,
-    ),
     scaffoldBackgroundColor: Colors.transparent,
-    appBarTheme: AppBarTheme(
+    dividerColor: lightPrimary,
+    appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       centerTitle: true,
       elevation: 0,
       titleTextStyle: TextStyle(
         fontSize: 30,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: Color(0xFF242424),
+      ),
+      iconTheme: IconThemeData(
+        color: Color(0xFF242424),
       ),
     ),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: Color(0XFFB7935F),
-      brightness: Brightness.light, // تأكيد للفاتح
-      primary: Color(0XFFB7935F),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: lightPrimary,
+      selectedItemColor: Color(0xFF242424),
+      unselectedItemColor: Colors.white,
+      selectedIconTheme: IconThemeData(size: 32),
+      unselectedIconTheme: IconThemeData(size: 26),
+    ),
+    colorScheme: const ColorScheme.light(
+      primary: lightPrimary,
       onPrimary: Colors.white,
-      secondary: Color(0XFFB7935F),
-      onSecondary: Colors.black,
+      secondary: lightPrimary,
+      onSecondary: Color(0xFF242424),
+      surface: Colors.white,
+      onSurface: Color(0xFF242424),
     ),
   );
 
-  // إضافة الثيم الداكن هنا
   static final ThemeData darkTheme = ThemeData(
-    // 2. السطر السحري اللي هيشغل لك الـ Dark Mode ويغير الخلفية للكحلي
     brightness: Brightness.dark,
-
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      selectedItemColor: Color(
-        0XFFFACC1D,
-      ), // اللون الذهبي للعنصر المختار في الداكن
-      unselectedItemColor: Colors.white,
-    ),
     scaffoldBackgroundColor: Colors.transparent,
-    appBarTheme: AppBarTheme(
+    dividerColor: darkAccent,
+    appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       centerTitle: true,
       elevation: 0,
@@ -55,14 +52,24 @@ class MyThemeData {
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
+      iconTheme: IconThemeData(
+        color: Colors.white,
+      ),
     ),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: Color(0XFF141A2E),
-      brightness: Brightness.dark, // تأكيد للداكن
-      primary: Color(0XFF141A2E),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: darkPrimary,
+      selectedItemColor: darkAccent,
+      unselectedItemColor: Colors.white,
+      selectedIconTheme: IconThemeData(size: 32),
+      unselectedIconTheme: IconThemeData(size: 26),
+    ),
+    colorScheme: const ColorScheme.dark(
+      primary: darkPrimary,
       onPrimary: Colors.white,
-      secondary: Color(0XFF141A2E),
+      secondary: darkAccent,
       onSecondary: Colors.white,
+      surface: darkPrimary,
+      onSurface: darkAccent,
     ),
   );
 }

@@ -1,12 +1,2 @@
-import 'package:flutter/material.dart';
-import 'package:islami_app/theme/themes.dart';
-import 'package:islami_app/ui/splash/ui_uties.dart';
-
-class BottonNavItems extends BottomNavigationBarItem {
-  BottonNavItems(String title, String IconPath)
-    : super(
-        icon: ImageIcon(AssetImage(getFullPathImage(IconPath))),
-        label: title,
-        backgroundColor: MyThemeData.lightPrimary,
-      );
-}
+// ignore_for_file: file_names
+export 'package:islami_app/ui/home/bottom_nav_items.dart';

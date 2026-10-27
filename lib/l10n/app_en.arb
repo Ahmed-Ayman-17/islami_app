@@ -10,5 +10,9 @@
   "light": "Light",
   "dark": "Dark",
   "english": "English",
-  "arabic": "Arabic"
+  "arabic": "Arabic",
+  "sura_name": "Surah Name",
+  "verses_number": "Verses Number",
+  "number_of_praises": "Number of Praises",
+  "holy_quran_radio": "Holy Quran Radio"
 }
